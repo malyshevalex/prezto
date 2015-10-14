@@ -16,7 +16,7 @@ function set-window-title {
   zstyle -s ':prezto:module:terminal:window-title' format 'title_format' || title_format="%s"
   zformat -f title_formatted "$title_format" "s:$argv"
 
-  if [[ "$TERM" == screen* ]]; then
+  if [[ "$TERM" == screen* && -z "$TMUX" ]]; then
     title_format="\ek%s\e\\"
   else
     title_format="\e]2;%s\a"
@@ -108,10 +108,9 @@ then
   # directory is set separately.
   return
 fi
-
 # Set up non-Apple terminals.
 if zstyle -t ':prezto:module:terminal' auto-title \
-  && ( ! [[ -n "$STY" || -n "$TMUX" ]] )
+  && ( ! [[ -n "$STY" ]] )
 then
   # Sets the tab and window titles before the prompt is displayed.
   add-zsh-hook precmd _terminal-set-titles-with-path
